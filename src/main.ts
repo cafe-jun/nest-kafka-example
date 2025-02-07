@@ -12,9 +12,6 @@ async function bootstrap() {
       client: {
         brokers: ['localhost:9092'],
       },
-      consumer: {
-        groupId: 'popular-posts-consumer',
-      },
     },
   };
   app.connectMicroservice(kafkaOption);

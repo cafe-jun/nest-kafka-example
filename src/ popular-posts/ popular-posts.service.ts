@@ -18,17 +18,26 @@ export class PopularPostsService implements OnModuleInit {
     await this.consumerService.consumer(
       { topics: [this.postTopic] },
       {
-        eachMessage: async ({ topic, partition, message }) => {
-          console.log(
-            `topic ${topic}`,
-            `partition ${partition}`,
-            `message ${JSON.stringify(message)}`,
-          );
+        eachMessage: async ({ topic, partition, message, heartbeat }) => {
+          try {
+            console.log('message => ', message.value.toString());
+            await this.processMessage(message.value.toString());
+          } catch (error) {
+            await heartbeat();
+          }
         },
+        autoCommit: false,
       },
     );
   }
+  async processMessage(message: string) {
+    // 특정 확률로 실패하도록 시뮬레이션 (테스트 용도)
+    if (Math.random() < 0.3) {
+      throw new Error('Simulated processing failure');
+    }
 
+    console.log(`✅ Successfully processed: ${message}`);
+  }
   createPost({ postId, name }: { postId: number; name: string }) {
     const newPost = { postId, name };
     this.producerService.produce({
@@ -69,7 +78,6 @@ export class PopularPostsService implements OnModuleInit {
           date: DateUtil.getToday(),
         })),
       });
-      console.log('popularPosts :: ', popularPosts);
     });
   }
   private calculateScore(post: Post): number {
