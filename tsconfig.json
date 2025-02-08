@@ -16,6 +16,10 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@post/*": ["/src/post/*"],
+      "@popular-posts/*": ["/src/popular-posts/*"]
+    }
   }
 }
